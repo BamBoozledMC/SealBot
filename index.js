@@ -248,7 +248,7 @@ mc.on("message", (chatMsg) => {
             console.log(lurkmsgs[i2])
             mc.chat("/gc " + lurkmsgs[i2])
             db.set("msg.lurkincrement", i2 +1);
-            db.set("msg.lurklist", db.get("msg.lurklist") + ". ${sender}")
+            db.set("msg.lurklist", db.get("msg.lurklist") + `. ${sender}`)
         }
         if (sentMsgNoSpaces.toLowerCase().startsWith("!unlurk")) {
             let unlurkmsgs = [
@@ -263,7 +263,7 @@ mc.on("message", (chatMsg) => {
             console.log(unlurkmsgs[i3])
             mc.chat("/gc " + unlurkmsgs[i3])
             db.set("msg.unlurkincrement", i3 +1);
-            db.set("msg.lurklist", db.get("msg.lurklist").replace(", ${sender}", ""))
+            db.set("msg.lurklist", db.get("msg.lurklist").replace(`, ${sender}`, ""))
         }
         if (sentMsgNoSpaces.toLowerCase().startsWith("!playtime")) {
             mc.chat("/playtime")
