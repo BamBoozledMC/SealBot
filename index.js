@@ -1193,7 +1193,7 @@ client.on("message", (message) => {
     if (message.author.bot) return;
 
     if (message.channel.id == config["discord-channel"]) {
-      if(message.content.contains("\n")) {
+      if(message.content.includes("\n")) {
           return;
       }
     let member = message.guild.members.get(message.author.id)
@@ -1208,7 +1208,7 @@ client.on("message", (message) => {
     mc.chat("/gc " + memnick.replace(" ", "") + "» " + message.content)
     }
     if (message.channel.id == config["discord-officer-channel"]) {
-      if(message.content.contains("\n")) {
+      if(message.content.includes("\n")) {
           return;
       }
         let member = message.guild.members.get(message.author.id)
