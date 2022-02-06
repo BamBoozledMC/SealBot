@@ -18,10 +18,10 @@ const default_config_tempalte = `
     "mcserver": "mc.hypixel.net",
   
     "discord-token": "BOT_TOKEN",
-    "discord-guild": "860667007632277524",
-    "discord-channel": "872232416771735592",
-    "discord-officer-channel": "872232566424481812",
-    "discord-console-channel": "872232593410629672",
+    "discord-guild": "DISCORD_GUILD",
+    "discord-channel": "DISCORD_CHANNEL",
+    "discord-officer-channel": "DISCORD_OFFICER_CHANNEL",
+    "discord-console-channel": "DISCORD_CONSOLE_CHANNEL",
     "discord-bot-prefix": "=",
   
   
@@ -45,7 +45,6 @@ if (!fs.existsSync("config.json")) {
 }
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
-
 
 // Create a logs directory on first startup
 if (!fs.existsSync("logs")) {
@@ -74,7 +73,7 @@ const options = {
 
 
 
-// minecraft bot stuff vv
+// minecraft bot stuff 
 let mc;
 (function init() {
     console.log("Logging in.");
