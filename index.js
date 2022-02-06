@@ -635,7 +635,19 @@ mc.on("message", (chatMsg) => {
 				user.removeRole("878124885275201576")
 				user.send(`<@${removeroleID.discordID}>`, autounlink)
     }
-    if(msg.includes(`${sender} [E]: `)) {
+    if(msg.includes(` [E]: `)) {
+      let v = msg.split(" ", 4);
+      if (msg.includes(":")) return;
+      let splitMsg = msg.split(" ");
+      let i = msg.indexOf(":");
+      let splitMsg2 = [msg.slice(0,i), msg.slice(i+1)];
+      let sender, sentMsg;
+      if (splitMsg[0].includes("[")) {
+          sender = splitMsg[1].replace(":","");
+      } else {
+          sender = splitMsg[0].replace(":","");
+      }
+      sentMsg = splitMsg2[1];
         // Automatically give ELITE role in Discord
         let addroleID = db.get(`linked.users.MC.${sender}`)
         if(!addroleID) return;
@@ -645,7 +657,19 @@ mc.on("message", (chatMsg) => {
             user.addRole("917903499671507014");
         }
     }
-    if(msg.includes(`${sender} [W]: `)) {
+    if(msg.includes(` [W]: `)) {
+      let v = msg.split(" ", 4);
+      if (msg.includes(":")) return;
+      let splitMsg = msg.split(" ");
+      let i = msg.indexOf(":");
+      let splitMsg2 = [msg.slice(0,i), msg.slice(i+1)];
+      let sender, sentMsg;
+      if (splitMsg[0].includes("[")) {
+          sender = splitMsg[1].replace(":","");
+      } else {
+          sender = splitMsg[0].replace(":","");
+      }
+      sentMsg = splitMsg2[1];
 
         // Automatially give WARDEN role in Discord
         let addroleID = db.get(`linked.users.MC.${sender}`)
