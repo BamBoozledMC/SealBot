@@ -41,16 +41,21 @@ const default_config_tempalte = `
 
 // Create a config file on first startup
 if (!fs.existsSync("config.json")) {
-    fs.writeFileSync("config.json", default_config_tempalte, encoding="utf-8")
+    fs.writeFileSync("config.json", default_config_tempalte, encoding="utf-8");
 }
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
 
 
+// Create a logs directory on first startup
+if (!fs.existsSync("logs")) {
+    fs.mkdirSync("logs");
+}
+
 // create a rolling file logger based on date/time that fires process events
 const opts = {
 	errorEventName:'error',
-        logDirectory:'/Users/lwage/Desktop/Boreas Discord Bot/SealBot/logs', // NOTE: folder must exist and be writable...
+        logDirectory:'./logs',
         fileNamePattern:'<DATE>.log',
         dateFormat:'YYYY.MM.DD'
 };
