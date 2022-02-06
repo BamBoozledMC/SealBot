@@ -1364,7 +1364,7 @@ if(message.content.toLowerCase().startsWith(prefix + "execute")) {
     mc.chat("/" + messagesent)
 }
 if(message.content.toLowerCase().startsWith(prefix + "slowmode")) {
-    if (!message.member.hasPermission("MANAGE_CHANNELS") && (!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("Sorry, you don't have permissions to use this!");
+    if (!message.member.hasPermission("MANAGE_CHANNELS") && !message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("Sorry, you don't have permissions to use this!");
     let args = message.content.split(" ");
     let time = args[1]
             if(!time) return message.channel.send("Make sure you include a time!")
@@ -1378,7 +1378,7 @@ if(message.content.toLowerCase().startsWith(prefix + "slowmode")) {
                 message.channel.send(`:white_check_mark: I successfully set the channel slowmode to \`${args[1]}\``)
 }
 if(message.content.toLowerCase().startsWith(prefix + "clear")) {
-    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("Sorry, you don't have permissions to use this!");
+    if (!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("Sorry, you don't have permissions to use this!");
     let args = message.content.split(" ");
     if(!args[1] || isNaN(args[1]) || args[1] > 100) return message.channel.send("Invalid Number. Please make sure it is smaller then 100 and not a letter.");
 		  message.delete()
