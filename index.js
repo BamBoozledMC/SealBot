@@ -16,24 +16,24 @@ const default_config_tempalte = `
     "minecraft-username": "MC_EMAIL",
     "minecraft-password": "MC_PASS",
     "mcserver": "mc.hypixel.net",
-  
+
     "discord-token": "BOT_TOKEN",
     "discord-guild": "DISCORD_GUILD",
     "discord-channel": "DISCORD_CHANNEL",
     "discord-officer-channel": "DISCORD_OFFICER_CHANNEL",
     "discord-console-channel": "DISCORD_CONSOLE_CHANNEL",
     "discord-bot-prefix": "=",
-  
-  
+
+
     "acceptid1": "",
     "acceptign1": "",
-  
+
     "acceptid2": "",
     "acceptign2": "",
-  
+
     "acceptid3": "",
     "acceptign3": "",
-  
+
     "acceptid4": "",
     "acceptign4": ""
   }
@@ -73,7 +73,7 @@ const options = {
 
 
 
-// minecraft bot stuff 
+// minecraft bot stuff
 let mc;
 (function init() {
     console.log("Logging in.");
@@ -640,18 +640,18 @@ mc.on("message", (chatMsg) => {
         let addroleID = db.get(`linked.users.MC.${sender}`)
 
         let userguild = client.guilds.get(config["discord-guild"])
-		let user = userguild.members.get(removeroleID.discordID)
+		let user = userguild.members.get(addroleID.discordID)
         if(!user.hasRole("917903499671507014")) {
             user.addRole("917903499671507014");
         }
     }
     if(msg.includes(`${sender} [W]: `)) {
-        
+
         // Automatially give WARDEN role in Discord
         let addroleID = db.get(`linked.users.MC.${sender}`)
 
         let userguild = client.guilds.get(config["discord-guild"])
-		let user = userguild.members.get(removeroleID.discordID)
+		let user = userguild.members.get(addroleID.discordID)
         if(!user.hasRole("917898479563579432")) {
             user.addRole("917898479563579432")
         }
@@ -1526,7 +1526,7 @@ if(message.content.toLowerCase().startsWith(prefix + "lurklist")) {
     .setDescription(db.get("msg.lurklist"))
     .setFooter(client.user.username)
     message.channel.send(embed)
-    
+
 }
 if(message.content.toLowerCase().startsWith(prefix + "mute")) {
     if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.channel.send("No.");
