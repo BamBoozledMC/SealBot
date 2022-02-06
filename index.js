@@ -10,12 +10,14 @@ const readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 });
+const hypixel_utils = require("./hypixel-utils")
 
 const default_config_tempalte = `
 {
     "minecraft-username": "MC_EMAIL",
     "minecraft-password": "MC_PASS",
     "mcserver": "mc.hypixel.net",
+    "hypixel-token": "HYPIXEL_TOKEN",
 
     "discord-token": "BOT_TOKEN",
     "discord-guild": "DISCORD_GUILD",
@@ -42,6 +44,8 @@ const default_config_tempalte = `
 // Create a config file on first startup
 if (!fs.existsSync("config.json")) {
     fs.writeFileSync("config.json", default_config_tempalte, encoding="utf-8");
+    console.log("config.json was created.");
+    process.exit(1);
 }
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
@@ -71,7 +75,9 @@ const options = {
     password: config["minecraft-password"],
 };
 
-
+// Hypixel utils stuff
+let hyputils = new hypixel_utils.HypixelUtils(config["hypixel-token"]);
+let guild_id = "60e0fe5d8ea8c913180c8d47"; 
 
 // minecraft bot stuff
 let mc;
@@ -1217,8 +1223,20 @@ client.on('message', async message => {
     let cc = message.channel.id !== config["discord-channel"]
 
     if(message.content.toLowerCase().startsWith(prefix + "help")) {
-        message.channel.send("**Available Commands**\n\n`=verify`: Link your Minecraft account to your Discord. *Grants access to guild chat bridge* [Alias: `=link`]\n`=party <player>`: Parties a specified player. *Useful for frag runs* [Alias: `None`]\n`=paccept <player>`: Accepts a pending party invite from a player. [Alias: `None`]\n`=ptransfer <player>`: Transfers the party to a specified player. [Alias: `=pt`]\n`=pleave`: Leaves the party. [Alias: `None`]\n`=pdisband`: Disbands the party. [Alias: `=pd`]\n`=ping`: Returns the bot's ping. [Alias: `None`]\n`=playtime`: Returns the bot's playtime on Hypixel Skyblock. [Alias: `None`]\n`=find <player>`: Finds and lists info on the provided user. [Alias: `=whois`]\n\n**Moderation Commands**\n`=clear <amount>`: Clears specified amount of messages. *(Limited to 100)* [Alias: `None`]\n`=slowmode <time>`: Changes the channel slowmode to the specified time. [Alias: `None`]\n\n**Hypixel Guild Moderation Commands**\n`=mute <player/everyone> <time>`: Mutes a player in the guild for a specified amount of time. [Alias: `None`]\n`=unmute <player/everyone>`: Unmutes a player in the guild. [Alias: `None`]\n`=kick <player>`: Kicks a player from the guild. [Alias: `None`]\n`=promote <player>`: Promotes a player in the guild. [Alias: `None`]\n`=demote <player>`: Demotes a player in the guild. [Alias: `None`]\n`=broadcast <message>`: Broadcasts a message to the Guild chat & Discord channel. [Alias: `announce`]\n`=linked`: Displays all linked users [Alias: `None`]\n`=forceunlink <@user> OR <userID>`: Forcibly unlinks a user. [Alias: `=funlink`]\n\nCommands are not case sensitive.")
+        message.channel.send("**Available Commands**\n`=verify`: Link your Minecraft account to your Discord. *Grants access to guild chat bridge* [Alias: `=link`]\n`=guildstats`: Get the guild's statistics. [Alias=`=gs`]\n`=party <player>`: Parties a specified player. *Useful for frag runs* [Alias: `None`]\n`=paccept <player>`: Accepts a pending party invite from a player. [Alias: `None`]\n`=ptransfer <player>`: Transfers the party to a specified player. [Alias: `=pt`]\n`=pleave`: Leaves the party. [Alias: `None`]\n`=pdisband`: Disbands the party. [Alias: `=pd`]\n`=ping`: Returns the bot's ping. [Alias: `None`]\n`=playtime`: Returns the bot's playtime on Hypixel Skyblock. [Alias: `None`]\n`=find <player>`: Finds and lists info on the provided user. [Alias: `=whois`]\n\n**Moderation Commands**\n`=clear <amount>`: Clears specified amount of messages. *(Limited to 100)* [Alias: `None`]\n`=slowmode <time>`: Changes the channel slowmode to the specified time. [Alias: `None`]\n\n**Hypixel Guild Moderation Commands**\n`=mute <player/everyone> <time>`: Mutes a player in the guild for a specified amount of time. [Alias: `None`]\n`=unmute <player/everyone>`: Unmutes a player in the guild. [Alias: `None`]\n`=kick <player>`: Kicks a player from the guild. [Alias: `None`]\n`=promote <player>`: Promotes a player in the guild. [Alias: `None`]\n`=demote <player>`: Demotes a player in the guild. [Alias: `None`]\n`=broadcast <message>`: Broadcasts a message to the Guild chat & Discord channel. [Alias: `announce`]\n`=linked`: Displays all linked users [Alias: `None`]\n`=forceunlink <@user> OR <userID>`: Forcibly unlinks a user. [Alias: `=funlink`]\n\nCommands are not case sensitive.")
     }
+
+if(message.content.toLowerCase().startsWith(prefix + "guildstats" || prefix + "gs")) {
+    let guild = hyputils.get_guild_by_id(guild_id);
+    var top_3 = guild.get_member_list(parseNames=false, ranksOnly=false, sortBy="gexpToday").slice(-3).reverse();
+
+    let guildStatsEmbed = new discord.RichEmbed()
+        .setTitle(`${guild.get_name()}'s stats`)
+        .addField(`:bar_chart: ***General Statistics***`, `Total xp: **${guild.get_gexp_total()}**\nDaily xp gain: **+${parseInt(guild.get_gexp_today())}**\nGuild members: **${guild.get_member_count()}**`)
+        .addField(`:crown:Top 3 daily xp gain `, `🥇 ${hyputils.uuid_to_username(top_3[0].uuid)}: *+${top_3[0].gexpToday}*\n🥈 ${hyputils.uuid_to_username(top_3[1].uuid)}: *+${top_3[1].gexpToday}*\n🥉 ${hyputils.uuid_to_username(top_3[2].uuid)}: *+${top_3[2].gexpToday}*`)
+        .setColor("#71a6d2")
+    message.channel.send(guildStatsEmbed);
+}
 if(message.content.toLowerCase().startsWith(prefix + "party")) {
     if (cc) return;
     let args = message.content.split(" ", 4);
