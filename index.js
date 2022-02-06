@@ -4,13 +4,48 @@ const discord = require("discord.js");
 const beautify = require("beautify");
 const fs = require('fs');
 var os 	= require('os-utils');
-const config = JSON.parse(fs.readFileSync('./config.json'));
 const fetch = require('cross-fetch');
 const db = require('quick.db')
 const readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+const default_config_tempalte = `
+{
+    "minecraft-username": "MC_EMAIL",
+    "minecraft-password": "MC_PASS",
+    "mcserver": "mc.hypixel.net",
+  
+    "discord-token": "BOT_TOKEN",
+    "discord-guild": "860667007632277524",
+    "discord-channel": "872232416771735592",
+    "discord-officer-channel": "872232566424481812",
+    "discord-console-channel": "872232593410629672",
+    "discord-bot-prefix": "=",
+  
+  
+    "acceptid1": "",
+    "acceptign1": "",
+  
+    "acceptid2": "",
+    "acceptign2": "",
+  
+    "acceptid3": "",
+    "acceptign3": "",
+  
+    "acceptid4": "",
+    "acceptign4": ""
+  }
+`;
+
+// Create a config file on first startup
+if (!fs.existsSync("config.json")) {
+    fs.writeFileSync("config.json", default_config_tempalte, encoding="utf-8")
+}
+
+const config = JSON.parse(fs.readFileSync('./config.json'));
+
 
 // create a rolling file logger based on date/time that fires process events
 const opts = {
@@ -73,7 +108,8 @@ mc.on("login", () => {
 
 mc.on('kicked', console.log)
 mc.on('error', console.log)
-const { mineflayer: mineflayerViewer } = require('prismarine-viewer')
+const { mineflayer: mineflayerViewer } = require('prismarine-viewer');
+const { exit } = require("process");
 mc.once('spawn', () => {
   mineflayerViewer(mc, { port: 8880, firstPerson: true }) // port is the minecraft server port, if first person is false, you get a bird's-eye view
 })
