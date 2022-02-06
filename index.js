@@ -638,7 +638,7 @@ mc.on("message", (chatMsg) => {
     if(msg.includes(`${sender} [E]: `)) {
         // Automatically give ELITE role in Discord
         let addroleID = db.get(`linked.users.MC.${sender}`)
-
+        if(!addroleID) return;
         let userguild = client.guilds.get(config["discord-guild"])
 		let user = userguild.members.get(addroleID.discordID)
         if(!user.hasRole("917903499671507014")) {
@@ -649,7 +649,7 @@ mc.on("message", (chatMsg) => {
 
         // Automatially give WARDEN role in Discord
         let addroleID = db.get(`linked.users.MC.${sender}`)
-
+        if(!addroleID) return;
         let userguild = client.guilds.get(config["discord-guild"])
 		let user = userguild.members.get(addroleID.discordID)
         if(!user.hasRole("917898479563579432")) {
