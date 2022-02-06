@@ -200,6 +200,29 @@ mc.on("message", (chatMsg) => {
 
         //channel.send(embed);
         client.guilds.get(config["discord-guild"]).channels.get(config["discord-channel"]).send(embed);
+    
+        if(rank == "[E]") {
+            console.log(sender)
+            // Automatically give ELITE role in Discord
+            let addroleID = db.get(`linked.users.MC.${sender}`)
+            if(!addroleID) return;
+            let userguild = client.guilds.get(config["discord-guild"])
+            let user = userguild.members.get(addroleID.discordID)
+            if(!user.roles.some(role => role.id === '917898479563579432')) {
+                user.addRole("917903499671507014");
+            }
+        }
+        if(rank == "[W]") {
+            // Automatially give WARDEN role in Discord
+            let addroleID = db.get(`linked.users.MC.${sender}`)
+            if(!addroleID) return;
+            let userguild = client.guilds.get(config["discord-guild"])
+            let user = userguild.members.get(addroleID.discordID)
+            if(!user.roles.some(role => role.id === '917898479563579432')) {
+                user.addRole("917898479563579432")
+            }
+        }
+
     }
 
     if (msg.startsWith("Guild >") && msg.includes(":")) {
@@ -642,51 +665,6 @@ mc.on("message", (chatMsg) => {
 				user.removeRole("877188839255453766")
 				user.removeRole("878124885275201576")
 				user.send(`<@${removeroleID.discordID}>`, autounlink)
-    }
-    if(msg.includes(` [E]: `)) {
-      let v = msg.split(" ", 4);
-      if (msg.includes(":")) return;
-      let splitMsg = msg.split(" ");
-      let i = msg.indexOf(":");
-      let splitMsg2 = [msg.slice(0,i), msg.slice(i+1)];
-      let sender, sentMsg;
-      if (splitMsg[0].includes("[")) {
-          sender = splitMsg[1].replace(":","");
-      } else {
-          sender = splitMsg[0].replace(":","");
-      }
-      sentMsg = splitMsg2[1];
-        // Automatically give ELITE role in Discord
-        let addroleID = db.get(`linked.users.MC.${sender}`)
-        if(!addroleID) return;
-        let userguild = client.guilds.get(config["discord-guild"])
-		let user = userguild.members.get(addroleID.discordID)
-        if(!user.roles.some(role => role.id === '861410060034506762')) {
-            user.addRole("917903499671507014");
-        }
-    }
-    if(msg.includes(` [W]: `)) {
-      let v = msg.split(" ", 4);
-      if (msg.includes(":")) return;
-      let splitMsg = msg.split(" ");
-      let i = msg.indexOf(":");
-      let splitMsg2 = [msg.slice(0,i), msg.slice(i+1)];
-      let sender, sentMsg;
-      if (splitMsg[0].includes("[")) {
-          sender = splitMsg[1].replace(":","");
-      } else {
-          sender = splitMsg[0].replace(":","");
-      }
-      sentMsg = splitMsg2[1];
-
-        // Automatially give WARDEN role in Discord
-        let addroleID = db.get(`linked.users.MC.${sender}`)
-        if(!addroleID) return;
-        let userguild = client.guilds.get(config["discord-guild"])
-		let user = userguild.members.get(addroleID.discordID)
-        if(!user.roles.some(role => role.id === '861410060034506762')) {
-            user.addRole("917898479563579432")
-        }
     }
 
     /* if (msg.includes("the party")) {
