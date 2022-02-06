@@ -653,7 +653,7 @@ mc.on("message", (chatMsg) => {
         if(!addroleID) return;
         let userguild = client.guilds.get(config["discord-guild"])
 		let user = userguild.members.get(addroleID.discordID)
-        if(!user.hasRole("917903499671507014")) {
+        if(!user.roles.some(role => role.id === '861410060034506762')) {
             user.addRole("917903499671507014");
         }
     }
@@ -676,7 +676,7 @@ mc.on("message", (chatMsg) => {
         if(!addroleID) return;
         let userguild = client.guilds.get(config["discord-guild"])
 		let user = userguild.members.get(addroleID.discordID)
-        if(!user.hasRole("917898479563579432")) {
+        if(!user.roles.some(role => role.id === '861410060034506762')) {
             user.addRole("917898479563579432")
         }
     }
@@ -1248,7 +1248,7 @@ if(message.content.toLowerCase().startsWith(prefix + "pleave")) {
     mc.chat("/p leave")
 }
 if(message.content.toLowerCase().startsWith(prefix + "pc")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ");
     let messagesent = args.slice(1).join(" ")
     mc.chat("/pc " + messagesent)
@@ -1322,49 +1322,49 @@ if(message.content.toLowerCase().startsWith(prefix + "info")) {
 
 }
 if(message.content.toLowerCase().startsWith(prefix + "fadd")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ", 4);
     mc.chat("/friend " + args[1])
 }
 if(message.content.toLowerCase().startsWith(prefix + "friend")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ", 4);
     mc.chat("/friend " + args[1])
 }
 if(message.content.toLowerCase().startsWith(prefix + "fdeny")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ", 4);
     mc.chat("/friend deny " + args[1])
 }
 if(message.content.toLowerCase().startsWith(prefix + "faccept")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ", 4);
     mc.chat("/friend accept " + args[1])
 }
 if(message.content.toLowerCase().startsWith(prefix + "ignoreadd")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ", 4);
     mc.chat("/ignore add " + args[1])
 }
 if(message.content.toLowerCase().startsWith(prefix + "ignoreremove")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ", 4);
     mc.chat("/ignore remove " + args[1])
 }
 if(message.content.toLowerCase().startsWith(prefix + "say")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ");
     let messagesent = args.slice(1).join(" ")
     mc.chat("/gc " + messagesent)
 }
 if(message.content.toLowerCase().startsWith(prefix + "execute")) {
-    if (!message.author.hasRole("861410060034506762")) return message.channel.send("This command can only be used by Staff Members to prevent abuse");
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff Members to prevent abuse");
     let args = message.content.split(" ");
     let messagesent = args.slice(1).join(" ")
     mc.chat("/" + messagesent)
 }
 if(message.content.toLowerCase().startsWith(prefix + "slowmode")) {
-    if (!message.member.hasPermission("MANAGE_CHANNELS") && !message.author.hasRole("861410060034506762")) return message.channel.send("Sorry, you don't have permissions to use this!");
+    if (!message.member.hasPermission("MANAGE_CHANNELS") && (!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("Sorry, you don't have permissions to use this!");
     let args = message.content.split(" ");
     let time = args[1]
             if(!time) return message.channel.send("Make sure you include a time!")
@@ -1378,7 +1378,7 @@ if(message.content.toLowerCase().startsWith(prefix + "slowmode")) {
                 message.channel.send(`:white_check_mark: I successfully set the channel slowmode to \`${args[1]}\``)
 }
 if(message.content.toLowerCase().startsWith(prefix + "clear")) {
-    if (!message.member.hasPermission("MANAGE_MESSAGES") && !message.author.hasRole("861410060034506762")) return message.channel.send("Sorry, you don't have permissions to use this!");
+    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("Sorry, you don't have permissions to use this!");
     let args = message.content.split(" ");
     if(!args[1] || isNaN(args[1]) || args[1] > 100) return message.channel.send("Invalid Number. Please make sure it is smaller then 100 and not a letter.");
 		  message.delete()
@@ -1389,7 +1389,7 @@ if(message.content.toLowerCase().startsWith(prefix + "clear")) {
 }
 if(message.content.toLowerCase().startsWith(prefix + "pspam")) {
     if (cc) return;
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ");
     let messagesent = args.slice(1).join(" ")
     setTimeout(function() {
@@ -1412,7 +1412,7 @@ if(message.content.toLowerCase().startsWith(prefix + "pspam")) {
     }, 500);
 }
 if(message.content.toLowerCase().startsWith(prefix + "dm")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let user = message.mentions.users.first();
     let args = message.content.split(" ");
     message.delete()
@@ -1429,7 +1429,7 @@ if(message.content.toLowerCase().startsWith(prefix + "dm")) {
 		}
 }
 if(message.content.toLowerCase().startsWith(prefix + "send")) {
-    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.author.hasRole("861410060034506762"))) return;
+    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return;
     let args = message.content.split(" ");
     if (message.author.bot) return;
 		let msgtosend = args.slice(1).join(" ")
@@ -1442,7 +1442,7 @@ if(message.content.toLowerCase().startsWith(prefix + "send")) {
 		})
 }
 if(message.content.toLowerCase().startsWith(prefix + "announce")) {
-    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.author.hasRole("861410060034506762"))) return;
+    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return;
     let args = message.content.split(" ");
     if (message.author.bot) return;
 		let msgtosend = args.slice(1).join(" ")
@@ -1458,7 +1458,7 @@ if(message.content.toLowerCase().startsWith(prefix + "announce")) {
 		})
 }
 if(message.content.toLowerCase().startsWith(prefix + "broadcast")) {
-    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.author.hasRole("861410060034506762"))) return;
+    if (!message.member.hasPermission("MANAGE_MESSAGES") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return;
     let args = message.content.split(" ");
     if (message.author.bot) return;
 		let msgtosend = args.slice(1).join(" ")
@@ -1479,7 +1479,7 @@ if(message.content.toLowerCase().startsWith(prefix + "playtime")) {
     mc.chat("/playtime")
 }
 if(message.content.toLowerCase().startsWith(prefix + "fake")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
     let args = message.content.split(" ");
     let starthyprank = args[1].toLowerCase()
     let sender = args[2]
@@ -1556,7 +1556,7 @@ if(message.content.toLowerCase().startsWith(prefix + "lurklist")) {
 
 }
 if(message.content.toLowerCase().startsWith(prefix + "mute")) {
-    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.channel.send("No.");
+    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.channel.send("No.");
     let args = message.content.split(" ");
     let defuser = args[1]
             if(!defuser) return message.channel.send("Invalid usage! No user defined! `=mute <player/everyone> <time>`")
@@ -1568,7 +1568,7 @@ if(message.content.toLowerCase().startsWith(prefix + "mute")) {
                 message.reply(`:thumbsup: Command execute succesfully, check <#${config["discord-officer-channel"]}> for more info.`)
 }
 if(message.content.toLowerCase().startsWith(prefix + "unmute")) {
-    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.channel.send("No.");
+    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.channel.send("No.");
     let args = message.content.split(" ");
     let defuser = args[1]
             if(!defuser) return message.channel.send("Invalid usage! No user defined! `=unmute <player/everyone>`")
@@ -1611,7 +1611,7 @@ if (message.content.toLowerCase().startsWith(prefix + "inviteme")) {
     } else message.reply("You do not have permission to use this.")
 }
 if (message.content.toLowerCase().startsWith(prefix + "reload")) {
-    if (!message.author.hasRole("861410060034506762")) return;
+    if (!message.member.roles.some(role => role.id === '861410060034506762')) return;
        client.destroy()
        client.login(config["discord-token"]);
      message.channel.send("Reloaded");
@@ -1621,7 +1621,7 @@ if (message.content.toLowerCase().startsWith(prefix + "eval")) {
 
     let args = message.content.slice(6).split(" ");
 
-    if (!message.author.hasRole("861410060034506762")) return message.channel.send("This command can only be used by Staff to prevent abuse");
+    if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
     if (!args[0]) return message.channel.send("You didn't give me anything to evaluate! :sob:")
     try {
         if (args.join(" ").toLowerCase().includes("token")) return;
@@ -1693,7 +1693,7 @@ Errorembed.awaitReactions(filter, { max: 1, time: 15000, errors: ['time'] })
     }
 }
 if(message.content.toLowerCase().startsWith(prefix + "promote")) {
-    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.reply("This command is only available to Administrators.");
+    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.reply("This command is only available to Administrators.");
     let args = message.content.split(" ");
     let defuser = args[1]
             if(!defuser) return message.channel.send("Invalid usage! No user defined! `=promote <player>`");
@@ -1703,7 +1703,7 @@ if(message.content.toLowerCase().startsWith(prefix + "promote")) {
                 message.reply(`:thumbsup: Command execute succesfully, check <#${config["discord-officer-channel"]}> for more info.`)
 }
 if(message.content.toLowerCase().startsWith(prefix + "demote")) {
-    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.reply("This command is only available to Administrators.");
+    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.reply("This command is only available to Administrators.");
     let args = message.content.split(" ");
     let defuser = args[1]
             if(!defuser) return message.channel.send("Invalid usage! No user defined! `=demote <player>`");
@@ -1908,7 +1908,7 @@ if (reaction.emoji.name === '✅') {
 });
 }
 if(message.content.toLowerCase().startsWith(prefix) && ["purge", "remove"].includes(message.content.slice(prefix.length).trim().split(/ +/).shift().toLowerCase())) {
-  if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.reply("This command is currently only available to Administrators.");
+  if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.reply("This command is currently only available to Administrators.");
 let args = message.content.split(" ");
 console.log(args[1]);
 
@@ -1999,7 +1999,7 @@ if (reaction.emoji.name === '✅') {
 });
 }
 if(message.content.toLowerCase().startsWith(prefix + "kick")) {
-    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.channel.send("");
+    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.channel.send("");
     let args = message.content.split(" ");
     let defuser = args[1]
             if(!defuser) return message.channel.send("Invalid usage! No user defined! `=kick <player>`")
@@ -2060,7 +2060,7 @@ if(message.content.toLowerCase().startsWith(prefix) && ["whois", "who", "find"].
 }
 if(message.content.toLowerCase().startsWith(prefix + "linked")) {
   // !message.member.hasPermission("MANAGE_GUILD") &&
-    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.author.hasRole("861410060034506762"))) return message.reply("This command is currently only available to Administrators.");
+    if (!message.member.hasPermission("MANAGE_GUILD") && (!message.member.roles.some(role => role.id === '861410060034506762'))) return message.reply("This command is currently only available to Administrators.");
 		let linkedusers = db.get(`linked.users.ID`)
 		var listofusers = []
     var numofusers = 0
