@@ -1228,12 +1228,33 @@ client.on('message', async message => {
 
 if(message.content.toLowerCase().startsWith(prefix + "guildstats" || prefix + "gs")) {
     let guild = hyputils.get_guild_by_id(guild_id);
-    var top_3 = guild.get_member_list(parseNames=false, ranksOnly=false, sortBy="gexpToday").slice(-3).reverse();
+
+    // TODO: Maybe implement loading embed of some kind
+    // let loadingEmbed = new discord.RichEmbed()
+    //     .setTitle(`${guild.get_name()}'s stats`)
+    //     .addField("Fetching data...")
+    //     .setColor("#71a6d2")
+    // message.channel.send(loadingEmbed)
+    
+    var top_10_text = "";
+    var top_10_list = guild.get_member_list(parseNames=false, ranksOnly=false, sortBy="gexpToday").slice(-10).reverse();
+
+    for (let i = 0; i < top_10_list.length; i++) {
+        var index_text = i + 1;
+        if (i == 0) 
+            index_text = "🥇";
+        else if (i == 1)
+            index_text = "🥈";
+        else if (i == 2)
+            index_text = "🥉";
+
+        top_10_text += `${index_text}. ${hyputils.uuid_to_username(top_10_list[i].uuid)}: **${top_10_list[i].gexpToday}**\n`  
+    }
 
     let guildStatsEmbed = new discord.RichEmbed()
         .setTitle(`${guild.get_name()}'s stats`)
         .addField(`:bar_chart: ***General Statistics***`, `Total xp: **${guild.get_gexp_total()}**\nDaily xp gain: **+${parseInt(guild.get_gexp_today())}**\nGuild members: **${guild.get_member_count()}**`)
-        .addField(`:crown:Top 3 daily xp gain `, `🥇 ${hyputils.uuid_to_username(top_3[0].uuid)}: *+${top_3[0].gexpToday}*\n🥈 ${hyputils.uuid_to_username(top_3[1].uuid)}: *+${top_3[1].gexpToday}*\n🥉 ${hyputils.uuid_to_username(top_3[2].uuid)}: *+${top_3[2].gexpToday}*`)
+        .addField(`:crown:Top 10 daily xp gain `, top_10_text)
         .setColor("#71a6d2")
     message.channel.send(guildStatsEmbed);
 }
