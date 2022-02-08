@@ -21,6 +21,7 @@ class HypixelUtils {
     }
 
     uuid_to_username(uuid) {
+        return this.get_hypixel_response("player", `uuid=${uuid}&`).player.displayname // maybe this is faster but needs further testing
         return fetch(`https://playerdb.co/api/player/minecraft/${uuid}`).json().data.player.username;
     }
 
