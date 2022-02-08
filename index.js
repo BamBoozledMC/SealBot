@@ -1258,6 +1258,149 @@ if(message.content.toLowerCase().startsWith(prefix + "guildstats" || prefix + "g
         .setColor("#71a6d2")
     message.channel.send(guildStatsEmbed);
 }
+if(message.content.toLowerCase().startsWith(prefix + "embed")) {
+    if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
+    if(message.content.length == 6) return message.channel.send("You need to specify the embed's text");
+    
+    // Get a list of lines and slice =embed 
+    let content = message.content.split("\n");
+    content = content.slice(1);
+
+    let embed = new discord.RichEmbed()
+    
+    // Parse title and strip content if title is present
+    if (content[0].startsWith("##")) {
+        embed.setTitle(content[0].slice(2));
+        content = content.slice(1);
+    }
+
+    // Parse lines that do not have a heading
+    let description = "";
+    let last_desc_index = 0;
+    for (let i = 0; i < content.length; i++) {
+        const line = content[i];
+        if (line.startsWith("::")) {
+            break; // commands go after
+        }
+        if (line.startsWith("#")) {
+            last_desc_index = i;
+            break;
+        }
+        description += line.concat("\n");
+    }
+    if (description != "") embed.setDescription(description);
+
+    // Parse lines with headings
+    field_active = false
+    let field_title = "";
+    let field_text = "";
+    let last_field_index = 0;
+    for (let i = last_desc_index; i < content.length; i++) {
+        last_field_index = i;
+        const line = content[i];
+        
+        if (line.startsWith("#")) {
+            field_title = "";
+            field_text = "";
+
+            if (field_active) {
+                embed.addField(field_title, field_text);
+            }
+
+            field_active = true;
+            field_title = line.slice(1);
+            continue;
+        }
+        if (line.startsWith("::")) {
+            break; // commands go after
+        }
+        if (field_active) {
+            field_text += line.concat("\n");
+        } 
+    }
+    try {
+        embed.addField(field_title, field_text);
+    } catch {}
+    
+
+    // Settings variables
+    let send_channel = "";
+    let footericon = "";
+    let footertext = "";
+
+    // Settings handler
+    for (let i = last_field_index; i < content.length; i++) {
+        const line = content[i];
+
+        if (line.startsWith("::")) {
+            let command = line.slice(2).split(" ")[0]
+            let args = line.split(" ").slice(1)
+
+            switch (command.toLowerCase()) {
+                case "setcolor":
+                    if(args.length == 0) break;
+                    // Check if hex
+                    try {                  
+                        embed.setColor(args[0]);
+                    } catch {}
+                    break;
+            
+                case "setchannel":
+                    if(args.length == 0) break;
+                    send_channel = [args[0]];
+                    break;
+                
+                case "footericon":
+                    if(args.length == 0) break;
+                    footericon = args[0];
+                    break;
+
+                case "footertext":
+                    if(args.length == 0) break;
+                    footertext = args[0];
+                    break;
+
+                case "setthumbnail":
+                    if(args.length == 0) break;
+                    try {
+                        embed.setThumbnail(args[0]);
+                    } catch {}
+                    break;
+                
+                case "setauthor":
+                    if(args.length == 0) break;
+                    try {
+                        embed.setAuthor(args[0]);
+                    } catch {}
+                    break;
+                
+                case "seturl":
+                    if(args.length == 0) break;
+                    try {
+                        embed.setURL(args[0]);
+                    } catch {}
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        
+    }
+    
+    message.delete();
+    
+    try {
+        embed.setFooter(footertext, footericon);
+    } catch {console.log("Failed to set footer")}
+    
+    try {
+        message.guild.channels.get(String(send_channel)).send(embed);
+    } catch {
+        message.channel.send(embed);
+        console.log(`Failed to send to ${send_channel}`)
+    }
+}
 if(message.content.toLowerCase().startsWith(prefix + "party")) {
     if (cc) return;
     let args = message.content.split(" ", 4);
