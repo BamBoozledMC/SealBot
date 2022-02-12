@@ -26,6 +26,32 @@ const default_config_tempalte = `
     "discord-console-channel": "DISCORD_CONSOLE_CHANNEL",
     "discord-bot-prefix": "=",
 
+    "events-status": "1",
+    "notif-time": "300",
+    
+    "magma-status": "0",
+    "magma-channel": "MAGMA_CHANNEL_ID",
+    "magma-mentions": "ROLE_ID,ROLE_ID",
+    
+    "new-year-status": "0",
+    "new-year-channel": "MAGMA_CHANNEL_ID",
+    "new-year-mentions": "ROLE_ID,ROLE_ID",
+    
+    "da-status": "0",
+    "da-channel": "MAGMA_CHANNEL_ID",
+    "da-mentions": "ROLE_ID,ROLE_ID",
+        
+    "spooky-status": "0",
+    "spooky-channel": "MAGMA_CHANNEL_ID",
+    "spooky-mentions": "ROLE_ID,ROLE_ID",
+    
+    "zoo-status": "0",
+    "zoo-channel": "MAGMA_CHANNEL_ID",
+    "zoo-mentions": "ROLE_ID,ROLE_ID",
+    
+    "bank-status": "0",
+    "bank-channel": "MAGMA_CHANNEL_ID",
+    "bank-mentions": "ROLE_ID,ROLE_ID",
 
     "acceptid1": "",
     "acceptign1": "",
@@ -49,6 +75,12 @@ if (!fs.existsSync("config.json")) {
 }
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
+
+function writeConfig(param, value) {
+    config[param] = value;
+    fs.writeFileSync("./config.json", JSON.stringify(config, null, 4));
+}
+
 
 // Create a logs directory on first startup
 if (!fs.existsSync("logs")) {
@@ -1400,6 +1432,51 @@ if(message.content.toLowerCase().startsWith(prefix + "embed")) {
         message.channel.send(embed);
         console.log(`Failed to send to ${send_channel}`)
     }
+}
+if(message.content.toLowerCase().startsWith(prefix + "events")) {
+    // if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
+    if(message.content.length == 7) return message.channel.send("You need to specify the command!");
+
+    // get a list of lines and slice =events
+    let content = message.content.toLowerCase().split("\n").slice(1);
+    let result_text = "";
+
+    content.forEach(line => {
+        let event_list = ["magma", "new-year", "da", "spooky", "zoo", "bank"];
+        try {
+            let args = line.split(" ").slice(1);
+            let command = line.split(" ")[0];
+            if (command.startsWith("::")) command = command.slice(2);
+
+            if (command.startsWith("set")) {
+                if (args.length != 2) return;
+                if (["status", "channel", "mentions"].includes(command.slice(3))) {
+                    if (event_list.includes(args[0])) {
+                        if (command.slice(3) === "status" && !["1", "0"].includes(args[1])) return;    
+                        writeConfig(`${args[0]}-${command.slice(3)}`, args[1]);
+                    } else if (command.slice(3) === "status" && args[0] === "events" && ["1", "0"].includes(args[1])) writeConfig(`${args[0]}-${command.slice(3)}`, args[1]);
+                    else if (args[0] === "*") {
+                        if (command.slice(3) === "status") {
+                            if (!["1", "0"].includes(args[1])) return;
+                            event_list.push("events")
+                        }
+                        event_list.forEach(event => {
+                            writeConfig(`${event}-${command.slice(3)}`, args[1]);
+                        });
+                    }
+                    result_text += `Successfully set ${command.slice(3)} for ${args[0]} to ${args[1]}.\n`;
+                }
+            } else if (command == "notiftime") {
+                if (args.length != 1) return;
+                if (isNaN(args[0])) return;
+                writeConfig("notif-time", args[0]);
+                result_text += `Successfully set notification time to ${args[0]}.`;
+            }
+        } catch {}        
+    });
+    
+    if (result_text) return message.channel.send(result_text);
+    return message.channel.send("No settings changed :(");
 }
 if(message.content.toLowerCase().startsWith(prefix + "party")) {
     if (cc) return;
