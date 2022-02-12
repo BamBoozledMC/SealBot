@@ -1434,7 +1434,7 @@ if(message.content.toLowerCase().startsWith(prefix + "embed")) {
     }
 }
 if(message.content.toLowerCase().startsWith(prefix + "events")) {
-    // if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
+    if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
     if(message.content.length == 7) return message.channel.send("You need to specify the command!");
 
     // get a list of lines and slice =events
