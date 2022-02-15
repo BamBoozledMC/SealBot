@@ -10,12 +10,14 @@ const readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 });
+const hypixel_utils = require("./hypixel-utils")
 
 const default_config_tempalte = `
 {
     "minecraft-username": "MC_EMAIL",
     "minecraft-password": "MC_PASS",
     "mcserver": "mc.hypixel.net",
+    "hypixel-token": "HYPIXEL_TOKEN",
 
     "discord-token": "BOT_TOKEN",
     "discord-guild": "DISCORD_GUILD",
@@ -24,6 +26,32 @@ const default_config_tempalte = `
     "discord-console-channel": "DISCORD_CONSOLE_CHANNEL",
     "discord-bot-prefix": "=",
 
+    "events-status": "1",
+    "notif-time": "300",
+    
+    "magma-status": "0",
+    "magma-channel": "MAGMA_CHANNEL_ID",
+    "magma-mentions": "ROLE_ID,ROLE_ID",
+    
+    "new-year-status": "0",
+    "new-year-channel": "MAGMA_CHANNEL_ID",
+    "new-year-mentions": "ROLE_ID,ROLE_ID",
+    
+    "da-status": "0",
+    "da-channel": "MAGMA_CHANNEL_ID",
+    "da-mentions": "ROLE_ID,ROLE_ID",
+        
+    "spooky-status": "0",
+    "spooky-channel": "MAGMA_CHANNEL_ID",
+    "spooky-mentions": "ROLE_ID,ROLE_ID",
+    
+    "zoo-status": "0",
+    "zoo-channel": "MAGMA_CHANNEL_ID",
+    "zoo-mentions": "ROLE_ID,ROLE_ID",
+    
+    "bank-status": "0",
+    "bank-channel": "MAGMA_CHANNEL_ID",
+    "bank-mentions": "ROLE_ID,ROLE_ID",
 
     "acceptid1": "",
     "acceptign1": "",
@@ -42,9 +70,17 @@ const default_config_tempalte = `
 // Create a config file on first startup
 if (!fs.existsSync("config.json")) {
     fs.writeFileSync("config.json", default_config_tempalte, encoding="utf-8");
+    console.log("config.json was created.");
+    process.exit(1);
 }
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
+
+function writeConfig(param, value) {
+    config[param] = value;
+    fs.writeFileSync("./config.json", JSON.stringify(config, null, 4));
+}
+
 
 // Create a logs directory on first startup
 if (!fs.existsSync("logs")) {
@@ -71,7 +107,9 @@ const options = {
     password: config["minecraft-password"],
 };
 
-
+// Hypixel utils stuff
+let hyputils = new hypixel_utils.HypixelUtils(config["hypixel-token"]);
+let guild_id = "60e0fe5d8ea8c913180c8d47"; 
 
 // minecraft bot stuff
 let mc;
@@ -1218,8 +1256,229 @@ client.on('message', async message => {
     let cc = message.channel.id !== config["discord-channel"]
 
     if(message.content.toLowerCase().startsWith(prefix + "help")) {
-        message.channel.send("**Available Commands**\n\n`=verify`: Link your Minecraft account to your Discord. *Grants access to guild chat bridge* [Alias: `=link`]\n`=party <player>`: Parties a specified player. *Useful for frag runs* [Alias: `None`]\n`=paccept <player>`: Accepts a pending party invite from a player. [Alias: `None`]\n`=ptransfer <player>`: Transfers the party to a specified player. [Alias: `=pt`]\n`=pleave`: Leaves the party. [Alias: `None`]\n`=pdisband`: Disbands the party. [Alias: `=pd`]\n`=ping`: Returns the bot's ping. [Alias: `None`]\n`=playtime`: Returns the bot's playtime on Hypixel Skyblock. [Alias: `None`]\n`=find <player>`: Finds and lists info on the provided user. [Alias: `=whois`]\n\n**Moderation Commands**\n`=clear <amount>`: Clears specified amount of messages. *(Limited to 100)* [Alias: `None`]\n`=slowmode <time>`: Changes the channel slowmode to the specified time. [Alias: `None`]\n\n**Hypixel Guild Moderation Commands**\n`=mute <player/everyone> <time>`: Mutes a player in the guild for a specified amount of time. [Alias: `None`]\n`=unmute <player/everyone>`: Unmutes a player in the guild. [Alias: `None`]\n`=kick <player>`: Kicks a player from the guild. [Alias: `None`]\n`=promote <player>`: Promotes a player in the guild. [Alias: `None`]\n`=demote <player>`: Demotes a player in the guild. [Alias: `None`]\n`=broadcast <message>`: Broadcasts a message to the Guild chat & Discord channel. [Alias: `announce`]\n`=linked`: Displays all linked users [Alias: `None`]\n`=forceunlink <@user> OR <userID>`: Forcibly unlinks a user. [Alias: `=funlink`]\n\nCommands are not case sensitive.")
+        message.channel.send("**Available Commands**\n`=verify`: Link your Minecraft account to your Discord. *Grants access to guild chat bridge* [Alias: `=link`]\n`=guildstats`: Get the guild's statistics. [Alias=`=gs`]\n`=party <player>`: Parties a specified player. *Useful for frag runs* [Alias: `None`]\n`=paccept <player>`: Accepts a pending party invite from a player. [Alias: `None`]\n`=ptransfer <player>`: Transfers the party to a specified player. [Alias: `=pt`]\n`=pleave`: Leaves the party. [Alias: `None`]\n`=pdisband`: Disbands the party. [Alias: `=pd`]\n`=ping`: Returns the bot's ping. [Alias: `None`]\n`=playtime`: Returns the bot's playtime on Hypixel Skyblock. [Alias: `None`]\n`=find <player>`: Finds and lists info on the provided user. [Alias: `=whois`]\n\n**Moderation Commands**\n`=clear <amount>`: Clears specified amount of messages. *(Limited to 100)* [Alias: `None`]\n`=slowmode <time>`: Changes the channel slowmode to the specified time. [Alias: `None`]\n\n**Hypixel Guild Moderation Commands**\n`=mute <player/everyone> <time>`: Mutes a player in the guild for a specified amount of time. [Alias: `None`]\n`=unmute <player/everyone>`: Unmutes a player in the guild. [Alias: `None`]\n`=kick <player>`: Kicks a player from the guild. [Alias: `None`]\n`=promote <player>`: Promotes a player in the guild. [Alias: `None`]\n`=demote <player>`: Demotes a player in the guild. [Alias: `None`]\n`=broadcast <message>`: Broadcasts a message to the Guild chat & Discord channel. [Alias: `announce`]\n`=linked`: Displays all linked users [Alias: `None`]\n`=forceunlink <@user> OR <userID>`: Forcibly unlinks a user. [Alias: `=funlink`]\n\nCommands are not case sensitive.")
     }
+
+if(message.content.toLowerCase().startsWith(prefix + "guildstats" || prefix + "gs")) {
+    let guild = hyputils.get_guild_by_id(guild_id);
+
+    // TODO: Maybe implement loading embed of some kind
+    // let loadingEmbed = new discord.RichEmbed()
+    //     .setTitle(`${guild.get_name()}'s stats`)
+    //     .addField("Fetching data...")
+    //     .setColor("#71a6d2")
+    // message.channel.send(loadingEmbed)
+    
+    var top_10_text = "";
+    var top_10_list = guild.get_member_list(parseNames=false, ranksOnly=false, sortBy="gexpToday").slice(-10).reverse();
+
+    for (let i = 0; i < top_10_list.length; i++) {
+        var index_text = i + 1;
+        if (i == 0) 
+            index_text = "🥇";
+        else if (i == 1)
+            index_text = "🥈";
+        else if (i == 2)
+            index_text = "🥉";
+
+        top_10_text += `${index_text}. ${hyputils.uuid_to_username(top_10_list[i].uuid)}: **${top_10_list[i].gexpToday}**\n`  
+    }
+
+    let guildStatsEmbed = new discord.RichEmbed()
+        .setTitle(`${guild.get_name()}'s stats`)
+        .addField(`:bar_chart: ***General Statistics***`, `Total xp: **${guild.get_gexp_total()}**\nDaily xp gain: **+${parseInt(guild.get_gexp_today())}**\nGuild members: **${guild.get_member_count()}**`)
+        .addField(`:crown:Top 10 daily xp gain `, top_10_text)
+        .setColor("#71a6d2")
+    message.channel.send(guildStatsEmbed);
+}
+if(message.content.toLowerCase().startsWith(prefix + "embed")) {
+    if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
+    if(message.content.length == 6) return message.channel.send("You need to specify the embed's text");
+    
+    // Get a list of lines and slice =embed 
+    let content = message.content.split("\n");
+    content = content.slice(1);
+
+    let embed = new discord.RichEmbed()
+    
+    // Parse title and strip content if title is present
+    if (content[0].startsWith("##")) {
+        embed.setTitle(content[0].slice(2));
+        content = content.slice(1);
+    }
+
+    // Parse lines that do not have a heading
+    let description = "";
+    let last_desc_index = 0;
+    for (let i = 0; i < content.length; i++) {
+        const line = content[i];
+        if (line.startsWith("::")) {
+            break; // commands go after
+        }
+        if (line.startsWith("#")) {
+            last_desc_index = i;
+            break;
+        }
+        description += line.concat("\n");
+    }
+    if (description != "") embed.setDescription(description);
+
+    // Parse lines with headings
+    field_active = false
+    let field_title = "";
+    let field_text = "";
+    let last_field_index = 0;
+    for (let i = last_desc_index; i < content.length; i++) {
+        last_field_index = i;
+        const line = content[i];
+        
+        if (line.startsWith("#")) {
+            field_title = "";
+            field_text = "";
+
+            if (field_active) {
+                embed.addField(field_title, field_text);
+            }
+
+            field_active = true;
+            field_title = line.slice(1);
+            continue;
+        }
+        if (line.startsWith("::")) {
+            break; // commands go after
+        }
+        if (field_active) {
+            field_text += line.concat("\n");
+        } 
+    }
+    try {
+        embed.addField(field_title, field_text);
+    } catch {}
+    
+
+    // Settings variables
+    let send_channel = "";
+    let footericon = "";
+    let footertext = "";
+
+    // Settings handler
+    for (let i = last_field_index; i < content.length; i++) {
+        const line = content[i];
+
+        if (line.startsWith("::")) {
+            let command = line.slice(2).split(" ")[0]
+            let args = line.split(" ").slice(1)
+
+            switch (command.toLowerCase()) {
+                case "setcolor":
+                    if(args.length == 0) break;
+                    // Check if hex
+                    try {                  
+                        embed.setColor(args[0]);
+                    } catch {}
+                    break;
+            
+                case "setchannel":
+                    if(args.length == 0) break;
+                    send_channel = [args[0]];
+                    break;
+                
+                case "footericon":
+                    if(args.length == 0) break;
+                    footericon = args[0];
+                    break;
+
+                case "footertext":
+                    if(args.length == 0) break;
+                    footertext = args[0];
+                    break;
+
+                case "setthumbnail":
+                    if(args.length == 0) break;
+                    try {
+                        embed.setThumbnail(args[0]);
+                    } catch {}
+                    break;
+                
+                case "setauthor":
+                    if(args.length == 0) break;
+                    try {
+                        embed.setAuthor(args[0]);
+                    } catch {}
+                    break;
+                
+                case "seturl":
+                    if(args.length == 0) break;
+                    try {
+                        embed.setURL(args[0]);
+                    } catch {}
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        
+    }
+    
+    message.delete();
+    
+    try {
+        embed.setFooter(footertext, footericon);
+    } catch {console.log("Failed to set footer")}
+    
+    try {
+        message.guild.channels.get(String(send_channel)).send(embed);
+    } catch {
+        message.channel.send(embed);
+        console.log(`Failed to send to ${send_channel}`)
+    }
+}
+if(message.content.toLowerCase().startsWith(prefix + "events")) {
+    if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
+    if(message.content.length == 7) return message.channel.send("You need to specify the command!");
+
+    // get a list of lines and slice =events
+    let content = message.content.toLowerCase().split("\n").slice(1);
+    let result_text = "";
+
+    content.forEach(line => {
+        let event_list = ["magma", "new-year", "da", "spooky", "zoo", "bank"];
+        try {
+            let args = line.split(" ").slice(1);
+            let command = line.split(" ")[0];
+            if (command.startsWith("::")) command = command.slice(2);
+
+            if (command.startsWith("set")) {
+                if (args.length != 2) return;
+                if (["status", "channel", "mentions"].includes(command.slice(3))) {
+                    if (event_list.includes(args[0])) {
+                        if (command.slice(3) === "status" && !["1", "0"].includes(args[1])) return;    
+                        writeConfig(`${args[0]}-${command.slice(3)}`, args[1]);
+                    } else if (command.slice(3) === "status" && args[0] === "events" && ["1", "0"].includes(args[1])) writeConfig(`${args[0]}-${command.slice(3)}`, args[1]);
+                    else if (args[0] === "*") {
+                        if (command.slice(3) === "status") {
+                            if (!["1", "0"].includes(args[1])) return;
+                            event_list.push("events")
+                        }
+                        event_list.forEach(event => {
+                            writeConfig(`${event}-${command.slice(3)}`, args[1]);
+                        });
+                    }
+                    result_text += `Successfully set ${command.slice(3)} for ${args[0]} to ${args[1]}.\n`;
+                }
+            } else if (command == "notiftime") {
+                if (args.length != 1) return;
+                if (isNaN(args[0])) return;
+                writeConfig("notif-time", args[0]);
+                result_text += `Successfully set notification time to ${args[0]}.`;
+            }
+        } catch {}        
+    });
+    
+    if (result_text) return message.channel.send(result_text);
+    return message.channel.send("No settings changed :(");
+}
 if(message.content.toLowerCase().startsWith(prefix + "party")) {
     if (cc) return;
     let args = message.content.split(" ", 4);
