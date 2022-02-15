@@ -3,7 +3,7 @@ const guild = require("./guild");
 
 class HypixelUtils {
     constructor (hypixel_api_token) {
-        this.hypixel_api_token = hypixel_api_token;
+        this.hypixel_api_token = "607a4221-a77b-478d-aa38-9e15b97202ae";
         this.hypixel_api_url = "https://api.hypixel.net/";
     }
 
