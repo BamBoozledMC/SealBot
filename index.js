@@ -562,6 +562,7 @@ mc.on("message", (chatMsg) => {
 
         //channel.send(embed);
         client.guilds.get(config["discord-guild"]).channels.get(config["discord-channel"]).send(embed);
+        config.set("msg.lurklist", config.get("msg.lurklist").replace(`, ${sender}`, ""))
     }
 
     if (msg.includes("joined the g")) {
