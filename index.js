@@ -1293,8 +1293,8 @@ if(message.content.toLowerCase().startsWith(prefix + "guildstats" || prefix + "g
 }
 if(message.content.toLowerCase().startsWith(prefix + "embed")) {
     if(!message.member.roles.some(role => role.id === '861410060034506762')) return message.channel.send("This command can only be used by Staff to prevent abuse");
-    if(message.content.length == 6) return message.channel.send("You need to specify the embed's text");
-    
+    if(message.content.length == 6 || message.content.split("\n").length == 1) return message.channel.send("You need to specify the embed's text");
+
     // Get a list of lines and slice =embed 
     let content = message.content.split("\n");
     content = content.slice(1);
@@ -1428,7 +1428,9 @@ if(message.content.toLowerCase().startsWith(prefix + "embed")) {
     } catch {console.log("Failed to set footer")}
     
     try {
-        message.guild.channels.get(String(send_channel)).send(embed);
+        if (send_channel != "") {
+            message.guild.channels.get(String(send_channel)).send(embed);
+        }
     } catch {
         message.channel.send(embed);
         console.log(`Failed to send to ${send_channel}`)
