@@ -1426,7 +1426,7 @@ if(message.content.toLowerCase().startsWith(prefix + "embed")) {
     try {
         embed.setFooter(footertext, footericon);
     } catch {console.log("Failed to set footer")}
-    
+
     try {
         if (send_channel != "") {
             message.guild.channels.get(String(send_channel)).send(embed);
@@ -1795,12 +1795,17 @@ if(message.content.toLowerCase().startsWith(prefix + "fake")) {
         }, 500);
 } */
 if(message.content.toLowerCase().startsWith(prefix + "lurklist")) {
+    let lurk_list_text = db.get("msg.lurklist")
+    if (!lurk_list_text) {
+        lurk_list_text = "No players lurking at the moment!";
+    }
+    
     let embed = new discord.RichEmbed()
     .setColor("RED")
     .setTitle("Players Lurking")
-    .setDescription(db.get("msg.lurklist"))
-    .setFooter(client.user.username)
-    message.channel.send(embed)
+    .setDescription(lurk_list_text)
+    .setFooter(client.user.username);
+    message.channel.send(embed);
 
 }
 if(message.content.toLowerCase().startsWith(prefix + "mute")) {
